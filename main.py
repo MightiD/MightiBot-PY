@@ -2,6 +2,8 @@ import settings
 import discord
 from discord.ext import commands
 
+logger = settings.logging.getLogger("bot")
+
 def run():
     intents = discord.Intents.default()
 
@@ -9,9 +11,9 @@ def run():
 
     @bot.event
     async def on_ready():
-        print(f"{bot.user}, IS READY")
+        logger.info(f"User: {bot.user} (ID: {bot.user.id})")
 
-    bot.run(settings.API_TOKEN)
+    bot.run(settings.API_TOKEN, root_logger=True)
 
 if __name__ == "__main__":
     run()
