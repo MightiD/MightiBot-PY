@@ -1,3 +1,4 @@
+import random
 import settings
 import discord
 from discord.ext import commands
@@ -11,6 +12,11 @@ def run():
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     @bot.event
+    async def onCommandError(ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.reply("Missing arguments")
+
+    @bot.event
     async def on_ready():
         logger.info(f"User: {bot.user} (ID: {bot.user.id})")
 
@@ -20,8 +26,23 @@ def run():
         brief="Replies with Pong"
     )
     async def ping(ctx):
-        """Answers with Pong"""
         await ctx.reply("pong")
+
+    @bot.command()
+    async def say(ctx, *content):
+        try:
+            await ctx.reply(" ".join(content))
+        except:
+            await ctx.reply("What?")
+
+    @bot.command(
+        aliases=["Choose", "random", "Random"],
+    )
+    async def choose(ctx, *content):
+        try:
+            await ctx.reply(random.choice(content))
+        except:
+            await ctx.reply("Error")
 
     bot.run(settings.API_TOKEN, root_logger=True)
 
